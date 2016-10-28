@@ -30,7 +30,7 @@
     <!-- Secured pages with SAML as entry point -->
     <security:http entry-point-ref="samlEntryPoint" use-expressions="false">
         <security:intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY"/>
-        <security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+     <!--   <security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>-->
         <security:custom-filter after="BASIC_AUTH_FILTER" ref="samlFilter"/>
     </security:http>
 
@@ -115,11 +115,7 @@
     <bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
         <constructor-arg>
             <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
-                <property name="extendedMetadata">
-                    <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
-                        <property name="idpDiscoveryEnabled" value="true"/>
-                    </bean>
-                </property>
+                <property name="entityId" value="ilay:zeidman"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -147,7 +143,7 @@
                             </constructor-arg>
                             <constructor-arg>
                                 <bean class="org.opensaml.util.resource.ClasspathResource">
-                                    <constructor-arg value="/metadata/idp.xml"/>
+                                    <constructor-arg value="/metadata/ilay_saml_metadata.xml"/>
                                 </bean>
                             </constructor-arg>
                             <property name="parserPool" ref="parserPool"/>
@@ -155,6 +151,8 @@
                     </constructor-arg>
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+                            <property name="local" value="true"/>
+                            <property name="alias" value="sp1"/>
                         </bean>
                     </constructor-arg>
                 </bean>
@@ -166,7 +164,7 @@
                     </constructor-arg>
                     <!-- Timeout for metadata loading in ms -->
                     <constructor-arg>
-                        <value type="int">15000</value>
+                        <value type="int">5000</value>
                     </constructor-arg>
                     <property name="parserPool" ref="parserPool"/>
                 </bean>
