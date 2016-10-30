@@ -40,6 +40,7 @@
             <security:filter-chain pattern="/saml/login/**" filters="samlEntryPoint"/>
             <security:filter-chain pattern="/saml/logout/**" filters="samlLogoutFilter"/>
             <security:filter-chain pattern="/saml/metadata/**" filters="metadataDisplayFilter"/>
+            <security:filter-chain pattern="/saml/SSO/alias/sp2" filters="samlWebSSOProcessingFilter2"/>
             <security:filter-chain pattern="/saml/SSO/**" filters="samlWebSSOProcessingFilter"/>
             <security:filter-chain pattern="/saml/SSOHoK/**" filters="samlWebSSOHoKProcessingFilter"/>
             <security:filter-chain pattern="/saml/SingleLogout/**" filters="samlLogoutProcessingFilter"/>
@@ -49,9 +50,15 @@
 
     <!-- Handler deciding where to redirect user after successful login -->
     <bean id="successRedirectHandler"
+          class="org.springframework.security.saml.web.handlers.SuccessHandlerSp1">
+    </bean>
+    <bean id="successRedirectHandler2"
+          class="org.springframework.security.saml.web.handlers.SuccessHandlerSp2">
+    </bean>
+    <!-- <bean id="successRedirectHandler"
           class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
         <property name="defaultTargetUrl" value="/"/>
-    </bean>
+    </bean>-->
     <!--
     Use the following for interpreting RelayState coming from unsolicited response as redirect URL:
     <bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">
@@ -222,6 +229,12 @@
     <bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
         <property name="authenticationManager" ref="authenticationManager"/>
         <property name="authenticationSuccessHandler" ref="successRedirectHandler"/>
+        <property name="authenticationFailureHandler" ref="failureRedirectHandler"/>
+    </bean>
+
+    <bean id="samlWebSSOProcessingFilter2" class="org.springframework.security.saml.SAMLProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationSuccessHandler" ref="successRedirectHandler2"/>
         <property name="authenticationFailureHandler" ref="failureRedirectHandler"/>
     </bean>
 
